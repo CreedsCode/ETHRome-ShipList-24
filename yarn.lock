@@ -2198,6 +2198,7 @@ __metadata:
     eslint-config-next: ^14.0.4
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.2.1
+    joi: ^17.13.3
     next: ^14.2.11
     next-nprogress-bar: ^2.3.13
     next-themes: ^0.3.0
@@ -11958,7 +11959,6 @@ __metadata:
   resolution: "se-2@workspace:."
   dependencies:
     husky: ^8.0.1
-    joi: ^17.13.3
     lint-staged: ^13.0.3
   languageName: unknown
   linkType: soft

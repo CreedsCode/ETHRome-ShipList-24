@@ -42,8 +42,5 @@
   },
   "engines": {
     "node": ">=18.18.0"
-  },
-  "dependencies": {
-    "joi": "^17.13.3"
   }
 }

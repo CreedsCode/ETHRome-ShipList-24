@@ -95,7 +95,7 @@ const ProjectGrid = ({ projects }: { projects: IProject[] }) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {applyFilters().map((project) => (
-                    <div key={project.id} className="border p-4 rounded shadow">
+                    <div key={project.id} className="border p-4 bg-white rounded shadow">
                         <h2 className="font-bold text-xl">{project.name}</h2>
                         <p className="text-gray-600">{project.description}</p>
                         <p className="text-sm text-gray-400">Stage: {project.stage}</p>

@@ -12,6 +12,6 @@ export interface ServiceNeed {
     description: string;
     equityOffered?: number;
     budget?: number;
-    startDate: Date;
+    startDate?: Date;
     endDate?: Date;
 }

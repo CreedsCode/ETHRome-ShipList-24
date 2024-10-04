@@ -2207,6 +2207,7 @@ __metadata:
     react: ^18.3.1
     react-copy-to-clipboard: ^5.1.0
     react-dom: ^18.3.1
+    react-hook-form: ^7.53.0
     react-hot-toast: ^2.4.0
     tailwindcss: ^3.4.11
     type-fest: ^4.6.0
@@ -11351,6 +11352,15 @@ __metadata:
   peerDependencies:
     react: ^18.3.1
   checksum: 298954ecd8f78288dcaece05e88b570014d8f6dce5db6f66e6ee91448debeb59dcd31561dddb354eee47e6c1bb234669459060deb238ed0213497146e555a0b9
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.53.0":
+  version: 7.53.0
+  resolution: "react-hook-form@npm:7.53.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 84d67fb79bad03d0aa809b5e411d97fb081fc13cd2b6d063a988f81f6fbef8545463e05360afa9d8d58fff19f08fa919930dcdc98a9e68bf74048c9f63e10ad5
   languageName: node
   linkType: hard
 

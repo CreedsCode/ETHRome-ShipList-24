@@ -2,6 +2,19 @@
 
 import FormContext from "../../context/Form.context";
 import {useForm} from "react-hook-form";
+import {ISelectOption} from "~~/models";
+
+const stageOptionList: ISelectOption[] = [
+    {label: 'Idea', value: 'idea'},
+    {label: 'Prototype', value: 'prototype'},
+    {label: 'MVP', value: 'mvp'},
+    {label: 'Growth', value: 'growth'},
+];
+
+const yesNoOptionList: ISelectOption[] = [
+    {label: 'Yes', value: 'true'},
+    {label: 'No', value: 'false'},
+];
 
 const EditProjectForm = () => {
     const {
@@ -9,7 +22,7 @@ const EditProjectForm = () => {
         control,
         watch,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
     } = useForm();
 
     const onSubmit = () => {
@@ -17,12 +30,13 @@ const EditProjectForm = () => {
     };
 
     const onError = () => {
-
+        console.error('')
     };
 
     return (
         <FormContext.Provider value={{setValue, errors, watch, control}}>
-            <form onSubmit={handleSubmit(onSubmit, onError)} className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
+            <form onSubmit={handleSubmit(onSubmit, onError)}
+                  className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
 
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">Project Name</label>
@@ -50,10 +64,9 @@ const EditProjectForm = () => {
                     <label htmlFor="stage" className="block text-sm font-medium text-gray-700">Stage</label>
                     <select id="stage" name="stage"
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="idea">Idea</option>
-                        <option value="prototype">Prototype</option>
-                        <option value="mvp">MVP</option>
-                        <option value="growth">Growth</option>
+                            {stageOptionList.map((stageOption, i) => (
+                                <option key={`stageOption-${i}`} value={stageOption.value}>{stageOption.label}</option>
+                            ))}
                     </select>
                 </div>
 
@@ -76,32 +89,26 @@ const EditProjectForm = () => {
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">Cofounder Needed</label>
                     <div className="mt-2 space-y-2">
-                        <label className="inline-flex items-center">
-                            <input type="radio" name="cofounderNeeded" value="true" className="form-radio"
-                                   required/>
-                            <span className="ml-2">Yes</span>
-                        </label>
-                        <label className="inline-flex items-center">
-                            <input type="radio" name="cofounderNeeded" value="false" className="form-radio"
-                                   required/>
-                            <span className="ml-2">No</span>
-                        </label>
+                        {yesNoOptionList.map(({value, label}, i) => (
+                            <label key={`cofounder-option-${i}`} className="inline-flex items-center">
+                                <input type="radio" name="cofounderNeeded" value={value} className="form-radio"
+                                       required/>
+                                <span className="ml-2">{label}</span>
+                            </label>
+                        ))}
                     </div>
                 </div>
 
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">Accepts Service for Equity</label>
                     <div className="mt-2 space-y-2">
-                        <label className="inline-flex items-center">
-                            <input type="radio" name="acceptsServiceForEquity" value="true" className="form-radio"
-                                   required/>
-                            <span className="ml-2">Yes</span>
-                        </label>
-                        <label className="inline-flex items-center">
-                            <input type="radio" name="acceptsServiceForEquity" value="false" className="form-radio"
-                                   required/>
-                            <span className="ml-2">No</span>
-                        </label>
+                        {yesNoOptionList.map(({value, label}, i) => (
+                            <label key={`cofounder-option-${i}`} className="inline-flex items-center">
+                                <input type="radio" name="acceptsServiceForEquity" value={value} className="form-radio"
+                                       required/>
+                                <span className="ml-2">{label}</span>
+                            </label>
+                        ))}
                     </div>
                 </div>
 
@@ -123,15 +130,13 @@ const EditProjectForm = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label htmlFor="hrbNumber" className="block text-sm font-medium text-gray-700">HRB Number
-                            (optional)</label>
+                        <label htmlFor="hrbNumber" className="block text-sm font-medium text-gray-700">HRB Number (optional)</label>
                         <input type="text" id="hrbNumber" name="hrbNumber"
                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
                     </div>
 
                     <div>
-                        <label htmlFor="vatId" className="block text-sm font-medium text-gray-700">VAT ID
-                            (optional)</label>
+                        <label htmlFor="vatId" className="block text-sm font-medium text-gray-700">VAT ID (optional)</label>
                         <input type="text" id="vatId" name="vatId"
                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
                     </div>

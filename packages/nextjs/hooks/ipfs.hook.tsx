@@ -1,10 +1,8 @@
-import {useState} from 'react';
-import {create, IPFSHTTPClient} from 'ipfs-http-client';
-import scaffoldConfig from "~~/scaffold.config";
+import { useState } from 'react';
 
 const IPFS_ERRORS = {
     unknownError: 'AN UNKNOWN ERROR OCCURRED',
-    missingApiKey: 'MISSING_ALCHEMY_API_KEY',
+    missingApiKey: 'MISSING_INFURA_API_KEY',
 };
 
 export const useIpfs = () => {
@@ -12,37 +10,42 @@ export const useIpfs = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const getIpfsClient = (): IPFSHTTPClient | null => {
-        const apiKey = scaffoldConfig.alchemyApiKey;
-        if (!apiKey) {
-            setError(IPFS_ERRORS.missingApiKey);
-            return null;
-        }
-
-        return create({
-            host: 'ipfs-gateway.alchemy.com',
-            port: 443,
-            protocol: 'https',
-            headers: {
-                authorization: `Basic ${Buffer.from(apiKey).toString('base64')}`,
-            },
-        });
-    };
-
     const uploadToIpfs = async (data: any) => {
+
         setLoading(true);
         setError(null);
 
-        const ipfs = getIpfsClient();
-        if (!ipfs) {
+        const projectId = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
+        const projectSecret = process.env.NEXT_PUBLIC_INFURA_PROJECT_SECRET;
+
+        if (!projectId || !projectSecret) {
+            setError(IPFS_ERRORS.missingApiKey);
             setLoading(false);
             return;
         }
 
+        const auth = 'Basic ' + btoa(`${projectId}:${projectSecret}`);
+
+        const formData = new FormData();
+        formData.append('file', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+
         try {
-            const jsonString = JSON.stringify(data);
-            const result = await ipfs.add(jsonString);
-            setIpfsHash(result.path); // IPFS-Hash setzen
+            const response = await fetch('https://ipfs.infura.io:5001/api/v0/add', {
+                method: 'POST',
+                headers: {
+                    Authorization: auth,
+                },
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log(response);
+                setIpfsHash(result.Hash)
+            } else {
+                setError(`Error: ${result.Message}`);
+            }
         } catch (err) {
             setError(IPFS_ERRORS.unknownError);
         } finally {

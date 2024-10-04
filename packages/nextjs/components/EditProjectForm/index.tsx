@@ -11,7 +11,6 @@ import DropDown from "~~/components/form/DropDown";
 import CheckRadioBox from "~~/components/form/CheckRadioBox";
 import {useState} from "react";
 import {notification} from "~~/utils/scaffold-eth";
-import {ArrowPathIcon} from "@heroicons/react/24/outline";
 
 const stageOptionList: ISelectOption[] = [
     {label: 'Idea', value: 'idea'},
@@ -52,14 +51,17 @@ const EditProjectForm = () => {
             defaultValues: PROJECT_DEFAULT_DATA
         }
     );
-    const {uploadToIpfs} = useIpfs();
+    const {uploadToIpfs, ipfsHash} = useIpfs();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const onSubmit = async (data: IProjectFormData) => {
         setIsSubmitting(true);
         try {
             const res = await uploadToIpfs(data);
+            console.log(ipfsHash);
+/*
             reset();
+*/
             console.log('send success toast res: ', res);
             notification.success('Your project has been submitted');
         } catch (e) {

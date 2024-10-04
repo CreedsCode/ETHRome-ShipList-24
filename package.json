@@ -44,11 +44,6 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@hookform/resolvers": "^3.9.0",
-    "ipfs-http-client": "^60.0.1"
-=======
     "@iexec/dataprotector": "^2.0.0-beta.10"
->>>>>>> 5c5a19a (adding testing page)
   }
 }

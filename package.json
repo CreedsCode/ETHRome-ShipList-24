@@ -42,5 +42,9 @@
   },
   "engines": {
     "node": ">=18.18.0"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
+    "ipfs-http-client": "^60.0.1"
   }
 }

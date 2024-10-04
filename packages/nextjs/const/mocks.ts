@@ -9,7 +9,7 @@ const PROJECT_LIST_MOCK: IProject[] = [
         stage: 'mvp',
         fundingGoal: 50000,
         fundingReceived: 25000,
-        cofounderNeeded: true,
+        coFounderNeeded: true,
         acceptsServiceForEquity: true,
         serviceNeeds: [
             { serviceType: TServiceType.Development, description: 'Full-stack development', equityOffered: 10 },
@@ -35,7 +35,7 @@ const PROJECT_LIST_MOCK: IProject[] = [
         stage: 'growth',
         fundingGoal: 150000,
         fundingReceived: 90000,
-        cofounderNeeded: false,
+        coFounderNeeded: false,
         acceptsServiceForEquity: false,
         serviceNeeds: [
             { serviceType: TServiceType.Marketing, description: 'Brand strategy', equityOffered: 5 },
@@ -61,7 +61,7 @@ const PROJECT_LIST_MOCK: IProject[] = [
         stage: 'prototype',
         fundingGoal: 75000,
         fundingReceived: 40000,
-        cofounderNeeded: true,
+        coFounderNeeded: true,
         acceptsServiceForEquity: true,
         serviceNeeds: [
             { serviceType: TServiceType.Design, description: 'UI/UX design', equityOffered: 7 },
@@ -86,7 +86,7 @@ const PROJECT_LIST_MOCK: IProject[] = [
         stage: 'idea',
         fundingGoal: 100000,
         fundingReceived: 50000,
-        cofounderNeeded: true,
+        coFounderNeeded: true,
         acceptsServiceForEquity: true,
         serviceNeeds: [
             {  serviceType: TServiceType.Development, description: 'AI development', equityOffered: 15 },
@@ -111,7 +111,7 @@ const PROJECT_LIST_MOCK: IProject[] = [
         stage: 'mvp',
         fundingGoal: 80000,
         fundingReceived: 30000,
-        cofounderNeeded: false,
+        coFounderNeeded: false,
         acceptsServiceForEquity: true,
         serviceNeeds: [
             { serviceType: TServiceType.Design, description: 'App design', equityOffered: 12 },

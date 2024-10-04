@@ -2,7 +2,14 @@
 
 import FormContext from "../../context/Form.context";
 import {useForm} from "react-hook-form";
-import {ISelectOption} from "~~/models";
+import {IProjectFormData, ISelectOption} from "~~/models";
+import {useIpfs} from "~~/hooks/ipfs.hook";
+import TextInput from "../form/TextInput";
+import TextArea from "~~/components/form/TextAreaInput";
+import NumberInput from "~~/components/form/NumberInput";
+import DropDown from "~~/components/form/DropDown";
+import CheckRadioBox from "~~/components/form/CheckRadioBox";
+import {useState} from "react";
 
 const stageOptionList: ISelectOption[] = [
     {label: 'Idea', value: 'idea'},
@@ -16,161 +23,97 @@ const yesNoOptionList: ISelectOption[] = [
     {label: 'No', value: 'false'},
 ];
 
+const PROJECT_DEFAULT_DATA: IProjectFormData = {
+    coFounderNeeded: false,
+    contactEmail: "",
+    description: "",
+    fundingGoal: 0,
+    fundingReceived: 0,
+    industry: "",
+    name: "",
+    stage: "mvp",
+}
+
 const EditProjectForm = () => {
     const {
         setValue,
         control,
         watch,
+        reset,
         handleSubmit,
         formState: {errors},
-    } = useForm();
+    } = useForm<IProjectFormData>(
+        {
+            mode: 'onSubmit',
+            reValidateMode: 'onSubmit',
+/*            resolver: joiResolver(Joi.object(PROJECT_FORM_VALIDATOR)),*/
+            defaultValues: PROJECT_DEFAULT_DATA
+        }
+    );
+    const {uploadToIpfs} = useIpfs();
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const onSubmit = () => {
-
+    const onSubmit = async (data: IProjectFormData) => {
+        setIsSubmitting(true);
+        try {
+            const res = await uploadToIpfs(data);
+            reset();
+            console.log('send success toast res: ', res);
+        } catch (e) {
+            console.error('Error on EditProjectForm onSubmit', e);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    const onError = () => {
-        console.error('')
+    const onError = (e: any) => {
+        console.error('Error on EditProjectForm onError', e);
     };
 
     return (
         <FormContext.Provider value={{setValue, errors, watch, control}}>
             <form onSubmit={handleSubmit(onSubmit, onError)}
-                  className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
+                  className="w-8/12 mx-auto p-4 bg-white shadow-md rounded-md"
+            >
 
-                <div className="mb-4">
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">Project Name</label>
-                    <input type="text" id="name" name="name"
-                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="Enter the project name" required/>
-                </div>
+                <TextInput name={'name'} label={'Project Name'}/>
 
-                <div className="mb-4">
-                    <label htmlFor="description"
-                           className="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="description" name="description"
-                              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                              placeholder="Enter the project description" required></textarea>
-                </div>
+                <TextArea name={'description'} label={'Description'}/>
 
-                <div className="mb-4">
-                    <label htmlFor="industry" className="block text-sm font-medium text-gray-700">Industry</label>
-                    <input type="text" id="industry" name="industry"
-                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="Enter the industry" required/>
-                </div>
+                <TextInput name={'industry'} label={'Industry'}/>
 
-                <div className="mb-4">
-                    <label htmlFor="stage" className="block text-sm font-medium text-gray-700">Stage</label>
-                    <select id="stage" name="stage"
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            {stageOptionList.map((stageOption, i) => (
-                                <option key={`stageOption-${i}`} value={stageOption.value}>{stageOption.label}</option>
-                            ))}
-                    </select>
-                </div>
+                <DropDown name={'stage'} options={stageOptionList}></DropDown>
 
-                <div className="mb-4">
-                    <label htmlFor="fundingGoal" className="block text-sm font-medium text-gray-700">Funding
-                        Goal</label>
-                    <input type="number" id="fundingGoal" name="fundingGoal"
-                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="Enter the funding goal" required/>
-                </div>
+                <NumberInput name={'fundingGoal'} label={'Funding Goal'}/>
 
-                <div className="mb-4">
-                    <label htmlFor="fundingReceived" className="block text-sm font-medium text-gray-700">Funding
-                        Received</label>
-                    <input type="number" id="fundingReceived" name="fundingReceived"
-                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="Enter the funding received" required/>
-                </div>
+                <NumberInput name={'fundingReceived'} label={'Funding Received'}/>
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Cofounder Needed</label>
-                    <div className="mt-2 space-y-2">
-                        {yesNoOptionList.map(({value, label}, i) => (
-                            <label key={`cofounder-option-${i}`} className="inline-flex items-center">
-                                <input type="radio" name="cofounderNeeded" value={value} className="form-radio"
-                                       required/>
-                                <span className="ml-2">{label}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+                <DropDown name={'stage'} options={stageOptionList}></DropDown>
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Accepts Service for Equity</label>
-                    <div className="mt-2 space-y-2">
-                        {yesNoOptionList.map(({value, label}, i) => (
-                            <label key={`cofounder-option-${i}`} className="inline-flex items-center">
-                                <input type="radio" name="acceptsServiceForEquity" value={value} className="form-radio"
-                                       required/>
-                                <span className="ml-2">{label}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+                <CheckRadioBox type={'radio'} label={'Cofounder Needed'} options={yesNoOptionList}
+                               name={'cofounderNeeded'}/>
 
-                <div className="mb-4">
-                    <label htmlFor="serviceNeeds" className="block text-sm font-medium text-gray-700">Service
-                        Needs</label>
-                    <input type="text" id="serviceNeeds" name="serviceNeeds"
-                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="Describe the service needs (optional)"/>
-                </div>
+                <CheckRadioBox type={'radio'} label={'Accepts Service for Equity'} options={yesNoOptionList}
+                               name={'acceptsServiceForEquity'}/>
 
-                <div className="mb-4">
-                    <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700">Contact
-                        Email</label>
-                    <input type="email" id="contactEmail" name="contactEmail"
-                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="Enter your contact email" required/>
+                <h1>Service Needs</h1>
+
+                {/* Service Needs */}
+
+                <TextInput name={'contactEmail'} type={'email'} label={'E-Mail'}/>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <TextInput name={'hrbNumber'} label={'HRB Number (optional)'}/>
+
+                    <TextInput name={'vatId'} label={'VAT ID (optional)'}/>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label htmlFor="hrbNumber" className="block text-sm font-medium text-gray-700">HRB Number (optional)</label>
-                        <input type="text" id="hrbNumber" name="hrbNumber"
-                               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
-                    </div>
+                    <TextInput type={'url'} name={'instaUrl'} label={'Instagram (optional)'}/>
 
-                    <div>
-                        <label htmlFor="vatId" className="block text-sm font-medium text-gray-700">VAT ID (optional)</label>
-                        <input type="text" id="vatId" name="vatId"
-                               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
-                    </div>
-                </div>
+                    <TextInput type={'url'} name={'facebookUrl'} label={'Facebook (optional)'}/>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <label htmlFor="instaUrl" className="block text-sm font-medium text-gray-700">Instagram URL
-                            (optional)</label>
-                        <input type="url" id="instaUrl" name="instaUrl"
-                               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
-                    </div>
-
-                    <div>
-                        <label htmlFor="facebookUrl" className="block text-sm font-medium text-gray-700">Facebook
-                            URL (optional)</label>
-                        <input type="url" id="facebookUrl" name="facebookUrl"
-                               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
-                    </div>
-
-                    <div>
-                        <label htmlFor="linkedInUrl" className="block text-sm font-medium text-gray-700">LinkedIn
-                            URL (optional)</label>
-                        <input type="url" id="linkedInUrl" name="linkedInUrl"
-                               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <label htmlFor="wageEquityBalance" className="block text-sm font-medium text-gray-700">Wage/Equity
-                        Balance (0-1)</label>
-                    <input type="number" step="0.01" min="0" max="1" id="wageEquityBalance" name="wageEquityBalance"
-                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="Enter wage/equity balance (optional)"/>
+                    <TextInput type={'url'} name={'linkedInUrl'} label={'LinkedIn (optional)'}/>
                 </div>
 
                 <div className="flex justify-end">

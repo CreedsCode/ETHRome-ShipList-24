@@ -1,13 +1,11 @@
 "use client";
 
 import type {NextPage} from "next";
-import {useAccount} from "wagmi";
 import {APP_NAME} from "../const";
 import ProjectGrid from "~~/components/ProjectGrid";
 import PROJECT_LIST_MOCK from "~~/const/mocks";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
 
   return (
     <>

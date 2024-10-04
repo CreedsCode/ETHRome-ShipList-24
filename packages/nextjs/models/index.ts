@@ -8,4 +8,5 @@ export * from './upload.model';
 export * from './user.model';
 export * from './service.model';
 export * from './project.model';
+export * from './filter.model';
 

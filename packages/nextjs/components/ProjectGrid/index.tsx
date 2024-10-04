@@ -1,15 +1,15 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import {IProject, ServiceNeed, ServiceType} from "~~/models";
+import {IFilterState, IProject, ServiceNeed, TServiceType} from "~~/models";
 
 const ProjectGrid = ({ projects }: { projects: IProject[] }) => {
     const [visibleProjects, setVisibleProjects] = useState<IProject[]>([]);
-    const [filters, setFilters] = useState({
-        stage: '',
-        fundingGoal: '',
-        serviceType: '',
-        sortBy: 'createdAt'
+    const [filters, setFilters] = useState<IFilterState>({
+        stage: 'mvp',
+        fundingGoal: 0,
+        serviceType: null,
+        sortDirection: 'asc'
     });
     const [page, setPage] = useState(1);
 
@@ -37,7 +37,7 @@ const ProjectGrid = ({ projects }: { projects: IProject[] }) => {
             filteredProjects = filteredProjects.filter((p) => p.stage === filters.stage);
         }
         if (filters.fundingGoal) {
-            filteredProjects = filteredProjects.filter((p) => p.fundingGoal >= parseInt(filters.fundingGoal));
+            filteredProjects = filteredProjects.filter((p) => p.fundingGoal >= filters.fundingGoal);
         }
         if (filters.serviceType) {
             filteredProjects = filteredProjects.filter((p) =>
@@ -45,7 +45,7 @@ const ProjectGrid = ({ projects }: { projects: IProject[] }) => {
             );
         }
         filteredProjects = filteredProjects.sort((a, b) =>
-            filters.sortBy === 'createdAt' ? b.createdAt.getTime() - a.createdAt.getTime() : 0
+            filters.sortDirection === 'asc' ? b.createdAt.getTime() - a.createdAt.getTime() : 0
         );
 
         return filteredProjects.slice(0, page * 10);
@@ -80,7 +80,7 @@ const ProjectGrid = ({ projects }: { projects: IProject[] }) => {
 
                 <select name="serviceType" className="p-2 border" onChange={handleFilterChange}>
                     <option value="">Service Type</option>
-                    {Object.values(ServiceType).map((type) => (
+                    {Object.values(TServiceType).map((type) => (
                         <option key={type} value={type}>
                             {type}
                         </option>
@@ -88,7 +88,8 @@ const ProjectGrid = ({ projects }: { projects: IProject[] }) => {
                 </select>
 
                 <select name="sortBy" className="p-2 border" onChange={handleFilterChange}>
-                    <option value="createdAt">Sort by Created Date</option>
+                    <option value="createdAt">Sort by Created Date (ASC)</option>
+                    <option value="createdAt">Sort by Created Date (DESC)</option>
                 </select>
             </div>
 

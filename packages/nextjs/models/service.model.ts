@@ -1,4 +1,4 @@
-export enum ServiceType {
+export enum TServiceType {
     Development = 'development',
     Marketing = 'marketing',
     Design = 'design',
@@ -8,7 +8,7 @@ export enum ServiceType {
 }
 
 export interface ServiceNeed {
-    serviceType: ServiceType;
+    serviceType: TServiceType;
     description: string;
     equityOffered?: number;
     budget?: number;

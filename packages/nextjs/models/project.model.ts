@@ -2,12 +2,14 @@ import {TPersonReference} from "./user.model";
 import {ServiceNeed} from "./service.model";
 import {MediaItem} from "./media.model";
 
+export type TProjectStage = 'idea' | 'prototype' | 'mvp' | 'growth';
+
 export interface IProject {
     id: string;
     name: string;
     description: string;
     industry: string;
-    stage: 'idea' | 'prototype' | 'mvp' | 'growth';
+    stage: TProjectStage;
     fundingGoal: number;
     fundingReceived: number;
     cofounderNeeded: boolean;

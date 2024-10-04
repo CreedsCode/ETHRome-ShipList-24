@@ -1,27 +1,24 @@
 "use client";
 
 import React, { useCallback, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bars3Icon, BugAntIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
+import {APP_NAME} from "../const";
+import {UrlObject} from "node:url";
 
 type HeaderMenuLink = {
   label: string;
-  href: string;
+  href: UrlObject;
   icon?: React.ReactNode;
 };
 
 export const menuLinks: HeaderMenuLink[] = [
   {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Debug Contracts",
-    href: "/debug",
+    label: "Pitch your Project",
+    href: {pathname: 'edit-project', query: {id: 'new'}},
     icon: <BugAntIcon className="h-4 w-4" />,
   },
 ];
@@ -31,13 +28,12 @@ export const HeaderMenuLinks = () => {
 
   return (
     <>
-      {menuLinks.map(({ label, href, icon }) => {
-        const isActive = pathname === href;
+      {menuLinks.map(({href, icon, label}, i) => {
+        const isActive = pathname === href.href;
         return (
-          <li key={href}>
+          <li key={`header-link${i}`}>
             <Link
               href={href}
-              passHref
               className={`${
                 isActive ? "bg-secondary shadow-md" : ""
               } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
@@ -89,12 +85,12 @@ export const Header = () => {
           )}
         </div>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <div className="flex relative w-10 h-10">
-            <Image alt="SE2 logo" className="cursor-pointer" fill src="/logo.svg" />
+          <div className="flex relative w-10 align-middle justify-center">
+            NP
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">Scaffold-ETH</span>
-            <span className="text-xs">Ethereum dev stack</span>
+            <span className="font-bold leading-tight">{APP_NAME}</span>
+            <span className="text-xs">Pitch fast and save</span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">

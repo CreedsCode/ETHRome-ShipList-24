@@ -10,6 +10,8 @@ import NumberInput from "~~/components/form/NumberInput";
 import DropDown from "~~/components/form/DropDown";
 import CheckRadioBox from "~~/components/form/CheckRadioBox";
 import {useState} from "react";
+import {notification} from "~~/utils/scaffold-eth";
+import {ArrowPathIcon} from "@heroicons/react/24/outline";
 
 const stageOptionList: ISelectOption[] = [
     {label: 'Idea', value: 'idea'},
@@ -59,8 +61,10 @@ const EditProjectForm = () => {
             const res = await uploadToIpfs(data);
             reset();
             console.log('send success toast res: ', res);
+            notification.success('Your project has been submitted');
         } catch (e) {
             console.error('Error on EditProjectForm onSubmit', e);
+            notification.error('Opps that did not work, trying again won\'t help cause we messed up');
         } finally {
             setIsSubmitting(false);
         }
@@ -120,6 +124,9 @@ const EditProjectForm = () => {
                     <button type="submit"
                             className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Submit Project
+                        {isSubmitting && (
+                            <div className="loading align-middle justify-center ml-4 loading-spinner loading-xs"></div>
+                        )}
                     </button>
                 </div>
             </form>

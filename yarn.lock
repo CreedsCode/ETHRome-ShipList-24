@@ -9431,13 +9431,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.9.0":
-  version: 16.9.0
-  resolution: "graphql@npm:16.9.0"
-  checksum: 8cb3d54100e9227310383ce7f791ca48d12f15ed9f2021f23f8735f1121aafe4e5e611a853081dd935ce221724ea1ae4638faef5d2921fb1ad7c26b5f46611e9
-  languageName: node
-  linkType: hard
-
 "h3@npm:^1.8.1, h3@npm:^1.8.2":
   version: 1.10.0
   resolution: "h3@npm:1.10.0"
@@ -14431,7 +14424,6 @@ __metadata:
   resolution: "se-2@workspace:."
   dependencies:
     "@iexec/dataprotector": ^2.0.0-beta.10
-    graphql: ^16.9.0
     husky: ^8.0.1
     lint-staged: ^13.0.3
   languageName: unknown

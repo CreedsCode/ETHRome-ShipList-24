@@ -80,7 +80,6 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
           theme: "light",
           accentColor: "#676FFF",
         },
-        loginMethods: ['email', 'wallet', 'farcaster'],
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
         },

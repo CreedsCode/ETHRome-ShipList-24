@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { IExecDataProtector } from "@iexec/dataprotector";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { protectData as privyProtectData } from "./privyProtectData";
+import { DataObject, IExecDataProtector } from "@iexec/dataprotector";
+import { usePrivy, useSendTransaction, useWallets } from "@privy-io/react-auth";
 import type { NextPage } from "next";
 
 const TestPage: NextPage = () => {
@@ -11,17 +12,19 @@ const TestPage: NextPage = () => {
   const [isProtecting, setIsProtecting] = useState(false);
   const { ready, authenticated, login, createWallet } = usePrivy();
   const { wallets } = useWallets();
+  const { sendTransaction } = useSendTransaction();
   const [currentChain, setCurrentChain] = useState<`0x${string}` | null>(null);
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
 
   useEffect(() => {
     const initializeDataProtector = async () => {
-      if (wallets && wallets.length > 0 && currentChain === "0x86") {
+      if (typeof window !== "undefined" && wallets && wallets.length > 0 && currentChain === "0x86") {
+        const { IExecDataProtector } = await import("@iexec/dataprotector");
         const ethersProvider = await wallets[0].getEthereumProvider();
         console.log("ethersProvider", ethersProvider);
-        const dataProtector = new IExecDataProtector(ethersProvider);
-        console.log("newDataProtector", dataProtector);
-        setDataProtector(dataProtector);
+        const newDataProtector = new IExecDataProtector(ethersProvider);
+        console.log("newDataProtector", newDataProtector);
+        setDataProtector(newDataProtector);
       } else {
         setDataProtector(null);
       }
@@ -62,22 +65,21 @@ const TestPage: NextPage = () => {
   };
 
   const protectData = async () => {
-    if (dataProtector) {
-      setIsProtecting(true);
-      try {
-        const result = await dataProtector.protectData({
-          data: {
-            email: "example@gmail.com",
-          },
-        });
-        setProtectedData(result);
-        alert("Data protected successfully!");
-      } catch (error) {
-        console.error("Error protecting data:", error);
-        alert("Failed to protect data. Check console for details.");
-      } finally {
-        setIsProtecting(false);
-      }
+    setIsProtecting(true);
+    try {
+      // const result = await dataProtector.protectData({
+      //   data: {
+      //     email: "example@gmail.com",
+      //   },
+      // });
+      const result = await privyProtectData("hi" as unknown as DataObject);
+      setProtectedData(result);
+      // alert("Data protected successfully!");
+    } catch (error) {
+      console.error("Error protecting data:", error);
+      alert("Failed to protect data. Check console for details.");
+    } finally {
+      setIsProtecting(false);
     }
   };
 
@@ -121,7 +123,8 @@ const TestPage: NextPage = () => {
 
         <button
           onClick={protectData}
-          disabled={!dataProtector || isProtecting}
+          disabled={isProtecting}
+          // disabled={!dataProtector || isProtecting}
           className="w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-300"
         >
           {isProtecting ? "Protecting..." : "Protect Data"}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PrivyProvider } from "@privy-io/react-auth";
+import { PrivyProvider, addRpcUrlOverrideToChain } from "@privy-io/react-auth";
 import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -72,6 +72,8 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
     setMounted(true);
   }, []);
 
+  const iexecOverride = addRpcUrlOverrideToChain(iexec, "https://bellecour.iex.ec");
+
   return (
     <PrivyProvider
       appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}
@@ -84,7 +86,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
           createOnLogin: "users-without-wallets",
         },
         defaultChain: baseSepolia,
-        supportedChains: [base, baseSepolia, iexec],
+        supportedChains: [base, baseSepolia, iexecOverride],
       }}
     >
       <WagmiProvider config={wagmiConfig}>

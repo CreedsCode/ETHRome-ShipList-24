@@ -8,7 +8,7 @@ import { Contract } from "ethers";
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployDeployBellecour: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
@@ -21,28 +21,26 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   */
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
-  console.log("Deploying to network skipping bellecour");
+  console.log("name", hre.network.name);
   if (hre.network.name === "bellecour") {
-    console.log("Skipping deployment on bellecour network");
-    return;
-  }
-  await deploy("DataProtector", {
-    from: deployer,
-    // Contract constructor arguments
-    args: [deployer],
-    log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
-    autoMine: true,
-  });
+    await deploy("DataProtector", {
+      from: deployer,
+      // Contract constructor arguments
+      args: ["0x799daa22654128d0c64d5b79eac9283008158730"],
+      log: true,
+      // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
+      // automatically mining the contract deployment transaction. There is no effect on live networks.
+      autoMine: true,
+    });
 
-  // Get the deployed contract to interact with it after deploying.
-  // const yourContract = await hre.ethers.getContract<Contract>("YourContract", deployer);
-  // console.log("👋 Initial greeting:", await yourContract.greeting());
+    // Get the deployed contract to interact with it after deploying.
+    const yourContract = await hre.ethers.getContract<Contract>("DataProtector", deployer);
+    console.log("👋 Initial greeting:", await yourContract.greeting());
+  }
 };
 
-export default deployYourContract;
+export default deployDeployBellecour;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deployYourContract.tags = ["YourContract"];
+deployDeployBellecour.tags = ["DataProtector"];

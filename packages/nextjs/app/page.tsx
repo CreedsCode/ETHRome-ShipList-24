@@ -1,9 +1,9 @@
 "use client";
 
-import { APP_NAME } from "../const";
-import type { NextPage } from "next";
-import ProjectGrid from "~~/components/ProjectGrid";
-import PROJECT_LIST_MOCK from "~~/const/mocks";
+import {APP_NAME} from "../const";
+import type {NextPage} from "next";
+import SendContent from "~~/components/SendContent";
+
 
 const Home: NextPage = () => {
   return (
@@ -16,12 +16,7 @@ const Home: NextPage = () => {
           </h1>
         </div>
         <div className="px-5 mt-10">
-          <h1 className="text-center">
-            <span className="block text-3xl font-bold">Recent Startups</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
-            <ProjectGrid projects={PROJECT_LIST_MOCK} />
-          </div>
+          <SendContent />
         </div>
       </div>
     </>

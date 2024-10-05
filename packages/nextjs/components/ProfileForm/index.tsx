@@ -1,11 +1,12 @@
 "use client";
 
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import UploadZone from "~~/components/UploadZone";
 import SubmitButton from "~~/components/form/SubmitButton";
 import TextInput from "~~/components/form/TextInput";
 import FormContext from "~~/context/Form.context";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
 export interface IProfileFormData {
@@ -16,10 +17,18 @@ export interface IProfileFormData {
 
 const ProfileForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { writeContractAsync: WriteUserAccountManagerAsync } = useScaffoldWriteContract("UserAccountManager");
+  const { data } = useScaffoldReadContract({
+    contractName: "UserAccountManager",
+  });
+  //TODO how do i get this information
+  const hasAccount = true;
+
   const {
     formState: { errors, isValid },
     setValue,
     control,
+    reset,
     handleSubmit,
   } = useForm<IProfileFormData>({
     mode: "onSubmit",
@@ -27,10 +36,36 @@ const ProfileForm: FC = () => {
     defaultValues: { profileImage: null, userName: "", socialLink: "" },
   });
 
-  const handleSave = async (data: IProfileFormData) => {
+  useEffect(() => {
+    console.log(data);
+    if (hasAccount && data?.length) {
+      reset({
+        profileImage: data[2],
+        userName: data[0],
+        socialLink: data[3],
+      });
+    }
+  }, [data]);
+
+  const handleSave = async ({ userName, profileImage, socialLink }: IProfileFormData) => {
     setIsSubmitting(true);
+
     try {
-      console.log("send success toast ipfsHash: ", data);
+      if (hasAccount) {
+        await WriteUserAccountManagerAsync({
+          functionName: "createUser",
+          args: [userName, profileImage, socialLink],
+        });
+      } else {
+        await WriteUserAccountManagerAsync({
+          functionName: "updateSocials",
+          args: [socialLink],
+        });
+        await WriteUserAccountManagerAsync({
+          functionName: "updateProfilePicUrl",
+          args: [profileImage],
+        });
+      }
       notification.success("Your project has been submitted");
     } catch (e) {
       console.error("Error on EditProjectForm onSubmit", e);

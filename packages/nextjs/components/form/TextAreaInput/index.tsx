@@ -15,7 +15,6 @@ export interface ITextInputProps {
 export const TextArea: FC<ITextInputProps> = ({ name, label, disabled }) => {
   // @ts-ignore
   const Editor = dynamic(() => import("@tinymce/tinymce-react").then(mod => mod.Editor), { ssr: false });
-
   const { control } = useContext(FormContext);
 
   return (

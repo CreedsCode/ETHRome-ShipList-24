@@ -5,7 +5,6 @@ import SubmitButton from "~~/components/form/SubmitButton";
 import TextAreaInput from "~~/components/form/TextAreaInput";
 import TextInput from "~~/components/form/TextInput";
 import FormContext from "~~/context/Form.context";
-import { useIpfs } from "~~/hooks/ipfs.hook";
 import { notification } from "~~/utils/scaffold-eth";
 
 export interface ISendContentFormData {
@@ -15,7 +14,6 @@ export interface ISendContentFormData {
 }
 
 const SendContent = () => {
-  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const {
     formState: { errors, isValid },
@@ -28,16 +26,11 @@ const SendContent = () => {
     reValidateMode: "onSubmit",
     defaultValues: { message: "", files: [], receiver: "" },
   });
-  const { uploadToIpfs, ipfsHash } = useIpfs();
 
   const handleSave = async (data: ISendContentFormData) => {
     setIsSubmitting(true);
     try {
-      //await uploadToIpfs(data);
-      //console.log(ipfsHash);
-      /*
-                  reset();
-      */
+      // TODO save Message Dercio
       console.log("send success toast ipfsHash: ", data);
       notification.success("Your project has been submitted");
     } catch (e) {

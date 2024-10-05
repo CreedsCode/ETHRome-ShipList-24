@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { protectData as privyProtectData } from "./privyProtectData";
 import { DataObject, IExecDataProtector } from "@iexec/dataprotector";
-import { usePrivy, useSendTransaction, useWallets } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import type { NextPage } from "next";
 
 const TestPage: NextPage = () => {
@@ -12,7 +12,6 @@ const TestPage: NextPage = () => {
   const [isProtecting, setIsProtecting] = useState(false);
   const { ready, authenticated, login, createWallet } = usePrivy();
   const { wallets } = useWallets();
-  const { sendTransaction } = useSendTransaction();
   const [currentChain, setCurrentChain] = useState<`0x${string}` | null>(null);
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
 

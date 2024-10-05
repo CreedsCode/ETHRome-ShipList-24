@@ -91,7 +91,6 @@ export const protectData = async (data: DataObject) => {
   console.log("multiaddr", multiaddr);
   // 6. call createDataSetWithSchema on the dataprotector contract args: encryptedData uri and data schema
 
-
   // 6.1 dataprotector contract is calling the dataset regestry
   // 7. push encryption key to the secret managment service
   // 8. return the protected data

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FC, useEffect, useState } from "react";
+import { usePrivy } from "@privy-io/react-auth";
 import { useForm } from "react-hook-form";
 import UploadZone from "~~/components/UploadZone";
 import SubmitButton from "~~/components/form/SubmitButton";
@@ -16,8 +17,8 @@ export interface IProfileFormData {
 }
 
 const ProfileForm: FC = () => {
-  // TODO How the fuck can i retrive this shit address
-  const address = "";
+  const { user } = usePrivy();
+  const address = user?.wallet?.address;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { writeContractAsync: WriteUserAccountManagerAsync } = useScaffoldWriteContract("UserAccountManager");
   const { data } = useScaffoldReadContract({

@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/UserAccountManager.sol": {
+      "content": "//SPDX-License-Identifier: MIT\npragma solidity >=0.8.0 <0.9.0;\n\ncontract UserAccountManager {\n\tmapping(address => bool) public hasAccount;\n\n\tmapping(string => address) public usernameToAddress;\n\n\tstruct User {\n\t\tstring username;\n\t\taddress userAddress;\n\t\tstring profilePicURL;\n\t\tstring socials;\n\t}\n\n\tmapping(address => User) public users;\n\n\tevent UserCreated(address indexed userAddress, string username);\n\n\tmodifier uniqueUser(string memory username) {\n\t\trequire(\n\t\t\t!hasAccount[msg.sender],\n\t\t\t\"An account already exists for this address\"\n\t\t);\n\t\trequire(\n\t\t\tusernameToAddress[username] == address(0),\n\t\t\t\"Username already taken\"\n\t\t);\n\t\t_;\n\t}\n\n\tfunction createUser(\n\t\tstring memory username,\n\t\tstring memory profilePicURL,\n\t\tstring memory socials\n\t) public uniqueUser(username) {\n\t\tusers[msg.sender] = User(username, msg.sender, profilePicURL, socials);\n\n\t\thasAccount[msg.sender] = true;\n\t\tusernameToAddress[username] = msg.sender;\n\n\t\temit UserCreated(msg.sender, username);\n\t}\n\n\tfunction getUser(\n\t\taddress userAddress\n\t)\n\t\tpublic\n\t\tview\n\t\treturns (string memory, address, string memory, string memory)\n\t{\n\t\tUser memory user = users[userAddress];\n\t\treturn (\n\t\t\tuser.username,\n\t\t\tuser.userAddress,\n\t\t\tuser.profilePicURL,\n\t\t\tuser.socials\n\t\t);\n\t}\n\n\tfunction getUserByUsername(\n\t\tstring memory username\n\t)\n\t\tpublic\n\t\tview\n\t\treturns (string memory, address, string memory, string memory)\n\t{\n\t\taddress userAddress = usernameToAddress[username];\n\t\trequire(userAddress != address(0), \"No existing user\");\n\n\t\treturn (\n\t\t\tusers[userAddress].username,\n\t\t\tuserAddress,\n\t\t\tusers[userAddress].profilePicURL,\n\t\t\tusers[userAddress].socials\n\t\t);\n\t}\n\n\tfunction updateSocials(string memory _socials) public {\n\t\tif (hasAccount[msg.sender]) {\n\t\t\tusers[msg.sender].socials = _socials;\n\t\t}\n\t}\n\n\tfunction updateProfilePicURL(string memory _profilePicURL) public {\n\t\tif (hasAccount[msg.sender]) {\n\t\t\tusers[msg.sender].profilePicURL = _profilePicURL;\n\t\t}\n\t}\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

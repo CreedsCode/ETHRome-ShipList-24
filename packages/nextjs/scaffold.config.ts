@@ -1,3 +1,4 @@
+import { defineChain } from "viem";
 import * as chains from "viem/chains";
 
 export type ScaffoldConfig = {
@@ -8,9 +9,32 @@ export type ScaffoldConfig = {
   onlyLocalBurnerWallet: boolean;
 };
 
+const iexec = defineChain({
+  id: 134,
+  name: "iExec Sidechain",
+  network: "iexec",
+  nativeCurrency: {
+    decimals: 18,
+    name: "xRLC",
+    symbol: "xRLC",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://bellecour.iex.ec"],
+    },
+    public: {
+      http: ["https://bellecour.iex.ec"],
+    },
+  },
+  blockExplorers: {
+    default: { name: "BlockScout", url: "https://blockscout-bellecour.iex.ec/" },
+  },
+  testnet: false,
+});
+
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [chains.hardhat, chains.baseSepolia, chains.base],
+  targetNetworks: [chains.hardhat, chains.baseSepolia, chains.base, iexec],
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)

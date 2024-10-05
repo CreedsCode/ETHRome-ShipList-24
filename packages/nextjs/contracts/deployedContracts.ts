@@ -6,14 +6,14 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   134: {
-    YourContract: {
-      address: "0xc67e51cc179be407de77b3c526fdaf6228a7a112",
+    DataProtector: {
+      address: "0x2A76641f67E7B8CD4081a94a2505EFE20d2c22f3",
       abi: [
         {
           inputs: [
             {
-              internalType: "address",
-              name: "_owner",
+              internalType: "contract IDatasetRegistry",
+              name: "_registry",
               type: "address",
             },
           ],
@@ -21,130 +21,1019 @@ const deployedContracts = {
           type: "constructor",
         },
         {
+          inputs: [],
+          name: "ECDSAInvalidSignature",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "length",
+              type: "uint256",
+            },
+          ],
+          name: "ECDSAInvalidSignatureLength",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "s",
+              type: "bytes32",
+            },
+          ],
+          name: "ECDSAInvalidSignatureS",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "contract IDataset",
+              name: "dataset",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "schema",
+              type: "string",
+            },
+          ],
+          name: "DatasetSchema",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "relayerAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "functionSignature",
+              type: "bytes",
+            },
+          ],
+          name: "MetaTransactionExecuted",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_datasetOwner",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "_datasetName",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_datasetSchema",
+              type: "string",
+            },
+            {
+              internalType: "bytes",
+              name: "_datasetMultiaddr",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes32",
+              name: "_datasetChecksum",
+              type: "bytes32",
+            },
+          ],
+          name: "createDatasetWithSchema",
+          outputs: [
+            {
+              internalType: "contract IDataset",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              internalType: "bytes",
+              name: "functionSignature",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes32",
+              name: "sigR",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "sigS",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint8",
+              name: "sigV",
+              type: "uint8",
+            },
+          ],
+          name: "executeMetaTransaction",
+          outputs: [
+            {
+              internalType: "bytes",
+              name: "",
+              type: "bytes",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "nonces",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "registry",
+          outputs: [
+            {
+              internalType: "contract IDatasetRegistry",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        createDatasetWithSchema: "contracts/interfaces/IDataProtector.sol",
+      },
+    },
+  },
+  31337: {
+    DataProtector: {
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "contract IDatasetRegistry",
+              name: "_registry",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "ECDSAInvalidSignature",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "length",
+              type: "uint256",
+            },
+          ],
+          name: "ECDSAInvalidSignatureLength",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "s",
+              type: "bytes32",
+            },
+          ],
+          name: "ECDSAInvalidSignatureS",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "contract IDataset",
+              name: "dataset",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "schema",
+              type: "string",
+            },
+          ],
+          name: "DatasetSchema",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "relayerAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "functionSignature",
+              type: "bytes",
+            },
+          ],
+          name: "MetaTransactionExecuted",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_datasetOwner",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "_datasetName",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_datasetSchema",
+              type: "string",
+            },
+            {
+              internalType: "bytes",
+              name: "_datasetMultiaddr",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes32",
+              name: "_datasetChecksum",
+              type: "bytes32",
+            },
+          ],
+          name: "createDatasetWithSchema",
+          outputs: [
+            {
+              internalType: "contract IDataset",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              internalType: "bytes",
+              name: "functionSignature",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes32",
+              name: "sigR",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "sigS",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint8",
+              name: "sigV",
+              type: "uint8",
+            },
+          ],
+          name: "executeMetaTransaction",
+          outputs: [
+            {
+              internalType: "bytes",
+              name: "",
+              type: "bytes",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "nonces",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "registry",
+          outputs: [
+            {
+              internalType: "contract IDatasetRegistry",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        createDatasetWithSchema: "contracts/interfaces/IDataProtector.sol",
+      },
+    },
+    UserAccountManager: {
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      abi: [
+        {
           anonymous: false,
           inputs: [
             {
               indexed: true,
               internalType: "address",
-              name: "greetingSetter",
+              name: "userAddress",
               type: "address",
             },
             {
               indexed: false,
               internalType: "string",
-              name: "newGreeting",
+              name: "username",
               type: "string",
             },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
           ],
-          name: "GreetingChange",
+          name: "UserCreated",
           type: "event",
         },
         {
-          inputs: [],
-          name: "greeting",
-          outputs: [
-            {
-              internalType: "string",
-              name: "",
-              type: "string",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [
             {
               internalType: "string",
-              name: "_newGreeting",
+              name: "username",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "profilePicURL",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "socials",
               type: "string",
             },
           ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
+          name: "createUser",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
         {
-          stateMutability: "payable",
-          type: "receive",
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+          ],
+          name: "getUser",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+          ],
+          name: "getUserByUsername",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "hasAccount",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_profilePicURL",
+              type: "string",
+            },
+          ],
+          name: "updateProfilePicURL",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_socials",
+              type: "string",
+            },
+          ],
+          name: "updateSocials",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          name: "usernameToAddress",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "users",
+          outputs: [
+            {
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "profilePicURL",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "socials",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+    },
+  },
+  84532: {
+    DataProtector: {
+      address: "0xc67e51cc179be407de77b3c526fdaf6228a7a112",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "contract IDatasetRegistry",
+              name: "_registry",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "ECDSAInvalidSignature",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "length",
+              type: "uint256",
+            },
+          ],
+          name: "ECDSAInvalidSignatureLength",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "s",
+              type: "bytes32",
+            },
+          ],
+          name: "ECDSAInvalidSignatureS",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "contract IDataset",
+              name: "dataset",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "schema",
+              type: "string",
+            },
+          ],
+          name: "DatasetSchema",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "relayerAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bytes",
+              name: "functionSignature",
+              type: "bytes",
+            },
+          ],
+          name: "MetaTransactionExecuted",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_datasetOwner",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "_datasetName",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_datasetSchema",
+              type: "string",
+            },
+            {
+              internalType: "bytes",
+              name: "_datasetMultiaddr",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes32",
+              name: "_datasetChecksum",
+              type: "bytes32",
+            },
+          ],
+          name: "createDatasetWithSchema",
+          outputs: [
+            {
+              internalType: "contract IDataset",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              internalType: "bytes",
+              name: "functionSignature",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes32",
+              name: "sigR",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "sigS",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint8",
+              name: "sigV",
+              type: "uint8",
+            },
+          ],
+          name: "executeMetaTransaction",
+          outputs: [
+            {
+              internalType: "bytes",
+              name: "",
+              type: "bytes",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "nonces",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "registry",
+          outputs: [
+            {
+              internalType: "contract IDatasetRegistry",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        createDatasetWithSchema: "contracts/interfaces/IDataProtector.sol",
+      },
+    },
+    UserAccountManager: {
+      address: "0x2A76641f67E7B8CD4081a94a2505EFE20d2c22f3",
+      abi: [
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+          ],
+          name: "UserCreated",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "profilePicURL",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "socials",
+              type: "string",
+            },
+          ],
+          name: "createUser",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+          ],
+          name: "getUser",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+          ],
+          name: "getUserByUsername",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "hasAccount",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_profilePicURL",
+              type: "string",
+            },
+          ],
+          name: "updateProfilePicURL",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_socials",
+              type: "string",
+            },
+          ],
+          name: "updateSocials",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          name: "usernameToAddress",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "users",
+          outputs: [
+            {
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "profilePicURL",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "socials",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
         },
       ],
       inheritedFunctions: {},

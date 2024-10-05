@@ -1,43 +1,35 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import UploadZone from "~~/components/UploadZone";
 import SubmitButton from "~~/components/form/SubmitButton";
-import TextAreaInput from "~~/components/form/TextAreaInput";
 import TextInput from "~~/components/form/TextInput";
 import FormContext from "~~/context/Form.context";
-import { useIpfs } from "~~/hooks/ipfs.hook";
 import { notification } from "~~/utils/scaffold-eth";
 
-export interface ISendContentFormData {
-  files: File[];
-  message: string;
-  receiver: string;
+export interface IProfileFormData {
+  profileImage: File | null;
+  userName: string;
+  socialLink: string;
 }
 
-const SendContent = () => {
-  const [file, setFile] = useState<File | null>(null);
+const ProfileForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const {
     formState: { errors, isValid },
     setValue,
     control,
-    reset,
     handleSubmit,
-  } = useForm<ISendContentFormData>({
+  } = useForm<IProfileFormData>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    defaultValues: { message: "", files: [], receiver: "" },
+    defaultValues: { profileImage: null, userName: "", socialLink: "" },
   });
-  const { uploadToIpfs, ipfsHash } = useIpfs();
 
-  const handleSave = async (data: ISendContentFormData) => {
+  const handleSave = async (data: IProfileFormData) => {
     setIsSubmitting(true);
     try {
-      //await uploadToIpfs(data);
-      //console.log(ipfsHash);
-      /*
-                  reset();
-      */
       console.log("send success toast ipfsHash: ", data);
       notification.success("Your project has been submitted");
     } catch (e) {
@@ -54,17 +46,14 @@ const SendContent = () => {
 
   return (
     <FormContext.Provider value={{ errors, setValue, control }}>
-      <form
-        onSubmit={handleSubmit(handleSave, handleError)}
-        className="max-w-lg mx-auto p-4 bg-white shadow-lg rounded-lg"
-      >
-        <TextInput name={"receiver"} label={"Your Receiver"} />
-        <UploadZone name={"files"} />
-        <TextAreaInput name={"message"} label={"Your Message"} />
+      <form onSubmit={handleSubmit(handleSave, handleError)} className="bg-white shadow-md rounded-lg p-6">
+        <UploadZone type={"profileImage"} name={"profileImage"} />
+        <TextInput name={"username"} label={"Your choosen Username"} />
+        <TextInput name={"socialLink"} label={"You Social Link"} />
         <SubmitButton isSubmitting={isSubmitting} disabled={!isValid} />
       </form>
     </FormContext.Provider>
   );
 };
 
-export default SendContent;
+export default ProfileForm;

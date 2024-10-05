@@ -2,51 +2,9 @@
 
 import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Bars3Icon, BugAntIcon } from "@heroicons/react/24/outline";
-import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { APP_NAME, PLACEHOLDER_PROFILE_IMAGE } from "../const";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
-import {APP_NAME} from "../const";
-import {UrlObject} from "node:url";
-
-type HeaderMenuLink = {
-  label: string;
-  href: UrlObject;
-  icon?: React.ReactNode;
-};
-
-export const menuLinks: HeaderMenuLink[] = [
-  {
-    label: "Pitch your Project",
-    href: {pathname: 'edit-project', query: {id: 'new'}},
-    icon: <BugAntIcon className="h-4 w-4" />,
-  },
-];
-
-export const HeaderMenuLinks = () => {
-  const pathname = usePathname();
-
-  return (
-    <>
-      {menuLinks.map(({href, icon, label}, i) => {
-        const isActive = pathname === href.href;
-        return (
-          <li key={`header-link${i}`}>
-            <Link
-              href={href}
-              className={`${
-                isActive ? "bg-secondary shadow-md" : ""
-              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
-            >
-              {icon}
-              <span>{label}</span>
-            </Link>
-          </li>
-        );
-      })}
-    </>
-  );
-};
 
 /**
  * Site header
@@ -79,26 +37,25 @@ export const Header = () => {
               onClick={() => {
                 setIsDrawerOpen(false);
               }}
-            >
-              <HeaderMenuLinks />
-            </ul>
+            ></ul>
           )}
         </div>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <div className="flex relative w-10 align-middle justify-center">
-            NP
-          </div>
+          <div className="flex relative w-10 align-middle justify-center">ET</div>
           <div className="flex flex-col">
             <span className="font-bold leading-tight">{APP_NAME}</span>
-            <span className="text-xs">Pitch fast and save</span>
+            <span className="text-xs">Send Secure Content</span>
           </div>
         </Link>
-        <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
-          <HeaderMenuLinks />
-        </ul>
       </div>
-      <div className="navbar-end flex-grow mr-4">
-        <RainbowKitCustomConnectButton />
+      <div className="navbar-end">
+        <Link href="/profile" passHref>
+          <img
+            src={PLACEHOLDER_PROFILE_IMAGE}
+            alt="Profile Avatar"
+            className="w-10 h-10 rounded-full cursor-pointer border-2 border-gray-300"
+          />
+        </Link>
       </div>
     </div>
   );

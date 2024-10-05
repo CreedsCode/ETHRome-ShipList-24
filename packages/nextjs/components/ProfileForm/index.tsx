@@ -16,13 +16,18 @@ export interface IProfileFormData {
 }
 
 const ProfileForm: FC = () => {
+  // TODO How the fuck can i retrive this shit address
+  const address = "";
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { writeContractAsync: WriteUserAccountManagerAsync } = useScaffoldWriteContract("UserAccountManager");
   const { data } = useScaffoldReadContract({
     contractName: "UserAccountManager",
   });
-  //TODO how do i get this information
-  const hasAccount = true;
+  const { data: hasUserData } = useScaffoldReadContract({
+    contractName: "UserAccountManager",
+    functionName: "hasAccount",
+    args: [address],
+  });
 
   const {
     formState: { errors, isValid },
@@ -38,7 +43,7 @@ const ProfileForm: FC = () => {
 
   useEffect(() => {
     console.log(data);
-    if (hasAccount && data?.length) {
+    if (hasUserData && data?.length) {
       reset({
         profileImage: data[2],
         userName: data[0],
@@ -51,7 +56,7 @@ const ProfileForm: FC = () => {
     setIsSubmitting(true);
 
     try {
-      if (hasAccount) {
+      if (hasUserData) {
         await WriteUserAccountManagerAsync({
           functionName: "createUser",
           args: [userName, profileImage, socialLink],

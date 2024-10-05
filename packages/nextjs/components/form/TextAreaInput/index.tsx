@@ -34,7 +34,7 @@ export const TextArea: FC<ITextInputProps> = ({ name, label, disabled }) => {
             disabled={disabled}
             value={value}
             init={{
-              height: 200,
+              height: 180,
               menubar: false,
               plugins: "emoticons",
               toolbar: "undo redo | bold italic underline | emoticons",

@@ -74,7 +74,7 @@ const UploadZone: FC<IUploadZoneProps> = ({ name, type = "content" }) => {
       />
       {type === "content" ? (
         <div
-          className={`border-2 border-dashed border-gray-300 rounded-lg h-24 flex justify-center cursor-pointer mb-4`}
+          className={`border-2 border-dashed border-gray-300 rounded-lg h-20 flex justify-center cursor-pointer mb-4`}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onClick={handleClick}

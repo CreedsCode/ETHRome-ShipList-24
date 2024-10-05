@@ -1,9 +1,8 @@
 "use client";
 
-import {APP_NAME} from "../const";
-import type {NextPage} from "next";
+import { APP_NAME } from "../const";
+import type { NextPage } from "next";
 import SendContent from "~~/components/SendContent";
-
 
 const Home: NextPage = () => {
   return (
@@ -14,6 +13,7 @@ const Home: NextPage = () => {
             <span className="block text-2xl mb-2">Welcome to</span>
             <span className="block text-4xl font-bold">{APP_NAME}</span>
           </h1>
+          <p>The easiest way to Send secure Content</p>
         </div>
         <div className="px-5 mt-10">
           <SendContent />

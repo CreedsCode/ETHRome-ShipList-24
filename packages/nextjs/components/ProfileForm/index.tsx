@@ -20,7 +20,19 @@ const ProfileForm: FC = () => {
   const { user } = usePrivy();
   const address = user?.wallet?.address;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { writeContractAsync: WriteUserAccountManagerAsync } = useScaffoldWriteContract("UserAccountManager");
+  const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
+  const { writeContractAsync: WriteUserAccountManagerAsync } = useScaffoldWriteContract("UserAccountManager", {
+    mutation: {
+      onSuccess: () => {
+        setIsSuccessful(true);
+      },
+      onError: (err: any) => {
+        console.error("Error on EditProjectForm onError", err);
+        setIsSuccessful(false);
+      },
+    },
+  });
+
   const { data } = useScaffoldReadContract({
     contractName: "UserAccountManager",
   });
@@ -43,7 +55,8 @@ const ProfileForm: FC = () => {
   });
 
   useEffect(() => {
-    console.log(data);
+    console.log("data", data);
+    console.log("hasUserData", hasUserData);
     if (hasUserData && data?.length) {
       reset({
         profileImage: data[2],
@@ -72,7 +85,11 @@ const ProfileForm: FC = () => {
           args: [profileImage],
         });
       }
-      notification.success("Your project has been submitted");
+      if (!isSuccessful) {
+        throw new Error("Failed to create user");
+      } else {
+        notification.success("Your project has been submitted");
+      }
     } catch (e) {
       console.error("Error on EditProjectForm onSubmit", e);
       notification.error("Opps that did not work, trying again won't help cause we messed up");
@@ -88,8 +105,9 @@ const ProfileForm: FC = () => {
   return (
     <FormContext.Provider value={{ errors, setValue, control }}>
       <form onSubmit={handleSubmit(handleSave, handleError)} className="bg-white shadow-md rounded-lg p-6">
+        <p>Your Wallet: {address}</p>
         <UploadZone type={"profileImage"} name={"profileImage"} />
-        <TextInput name={"username"} label={"Your choosen Username"} />
+        <TextInput name={"userName"} label={"Your choosen Username"} />
         <TextInput name={"socialLink"} label={"You Social Link"} />
         <SubmitButton isSubmitting={isSubmitting} disabled={!isValid} />
       </form>

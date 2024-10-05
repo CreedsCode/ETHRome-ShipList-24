@@ -60,10 +60,9 @@ const UploadZone: FC<IUploadZoneProps> = ({ name, type = "content" }) => {
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onChange } }) => (
           <input
             ref={inputRef}
-            value={value}
             type="file"
             accept="image/*, video/*"
             onChange={onChange}

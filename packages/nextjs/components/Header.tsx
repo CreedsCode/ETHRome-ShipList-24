@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useCallback, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { APP_NAME, PLACEHOLDER_PROFILE_IMAGE } from "../const";
+import logo from "../public/logo.png";
 import { usePrivy } from "@privy-io/react-auth";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
@@ -44,7 +46,9 @@ export const Header = () => {
           )}
         </div>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <div className="flex relative w-10 align-middle justify-center">ET</div>
+          <div className="flex relative w-10 align-middle justify-center">
+            <Image src={logo} alt={"EncrypTransfer Logo"} />
+          </div>
           <div className="flex flex-col">
             <span className="font-bold leading-tight">{APP_NAME}</span>
             <span className="text-xs">Send Secure Content</span>

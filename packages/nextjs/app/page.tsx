@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { APP_NAME } from "../const";
+import logo from "../public/logo.png";
 import { usePrivy } from "@privy-io/react-auth";
 import type { NextPage } from "next";
 
@@ -23,7 +25,11 @@ const Home: NextPage = () => {
           </h1>
           <p>The easiest way to Send secure Content</p>
         </div>
-        <div className="px-5 mt-10">Lorem Ipsum dolor sit amet</div>
+        <Image src={logo} alt={"EncrypTransfer Logo"} />
+        <div className="block max-w-4xl px-5 mt-10">
+          The only secure WeTransfer! So secure, not even our devs understand it anymore. Upload, cross fingers, and
+          hope your data gets there—eventually. Security, confusion, and mystery, all in one!
+        </div>
         <button
           onClick={redirectIfIsAuthenticated}
           className="mt-10 relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white text-xl font-bold rounded-full shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out transform hover:scale-105 hover:bg-gradient-to-l"

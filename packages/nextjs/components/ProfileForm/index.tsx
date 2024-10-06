@@ -7,12 +7,13 @@ import { useForm } from "react-hook-form";
 import UploadZone from "~~/components/UploadZone";
 import SubmitButton from "~~/components/form/SubmitButton";
 import TextInput from "~~/components/form/TextInput";
+import { PLACEHOLDER_PROFILE_IMAGE } from "~~/const";
 import FormContext from "~~/context/Form.context";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 
 export interface IProfileFormData {
-  profileImage: File | null;
+  profileImage: File | string | null;
   userName: string;
   socialLink: string;
 }
@@ -60,9 +61,10 @@ const ProfileForm: FC = () => {
   });
 
   useEffect(() => {
+    console.log("address", address);
     console.log("data", data);
     console.log("hasUserData", hasUserData);
-    if (hasUserData && data?.length) {
+    if (hasUserData && data && data[0]) {
       reset({
         profileImage: data[2],
         userName: data[0],
@@ -81,10 +83,13 @@ const ProfileForm: FC = () => {
     setIsSubmitting(true);
 
     try {
-      if (hasUserData) {
+      console.log("profileImage", profileImage);
+
+      if (!hasUserData) {
         await WriteUserAccountManagerAsync({
           functionName: "createUser",
-          args: [userName, profileImage, socialLink],
+          //TODO add actual Profile Image
+          args: [userName, PLACEHOLDER_PROFILE_IMAGE, socialLink],
         });
       } else {
         await WriteUserAccountManagerAsync({
@@ -92,8 +97,9 @@ const ProfileForm: FC = () => {
           args: [socialLink],
         });
         await WriteUserAccountManagerAsync({
-          functionName: "updateProfilePicUrl",
-          args: [profileImage],
+          //TODO add actual Profile Image
+          functionName: "updateProfilePicURL",
+          args: [PLACEHOLDER_PROFILE_IMAGE],
         });
       }
       console.log("isSuccessfull", isSubmitting);

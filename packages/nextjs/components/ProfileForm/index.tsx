@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FC, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { useForm } from "react-hook-form";
 import UploadZone from "~~/components/UploadZone";
@@ -17,10 +18,23 @@ export interface IProfileFormData {
 }
 
 const ProfileForm: FC = () => {
-  const { user } = usePrivy();
+  const { user, logout, authenticated } = usePrivy();
+  const { push } = useRouter();
   const address = user?.wallet?.address;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(false);
+  const {
+    formState: { errors, isValid },
+    setValue,
+    control,
+    reset,
+    handleSubmit,
+  } = useForm<IProfileFormData>({
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
+    defaultValues: { profileImage: null, userName: "", socialLink: "" },
+  });
+
   const { writeContractAsync: WriteUserAccountManagerAsync } = useScaffoldWriteContract("UserAccountManager", {
     mutation: {
       onSuccess: () => {
@@ -35,23 +49,14 @@ const ProfileForm: FC = () => {
 
   const { data } = useScaffoldReadContract({
     contractName: "UserAccountManager",
+    functionName: "getUser",
+    args: [address],
   });
+
   const { data: hasUserData } = useScaffoldReadContract({
     contractName: "UserAccountManager",
     functionName: "hasAccount",
     args: [address],
-  });
-
-  const {
-    formState: { errors, isValid },
-    setValue,
-    control,
-    reset,
-    handleSubmit,
-  } = useForm<IProfileFormData>({
-    mode: "onSubmit",
-    reValidateMode: "onSubmit",
-    defaultValues: { profileImage: null, userName: "", socialLink: "" },
   });
 
   useEffect(() => {
@@ -65,6 +70,12 @@ const ProfileForm: FC = () => {
       });
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!authenticated) {
+      push("/");
+    }
+  }, [authenticated]);
 
   const handleSave = async ({ userName, profileImage, socialLink }: IProfileFormData) => {
     setIsSubmitting(true);
@@ -85,6 +96,7 @@ const ProfileForm: FC = () => {
           args: [profileImage],
         });
       }
+      console.log("isSuccessfull", isSubmitting);
       if (!isSuccessful) {
         throw new Error("Failed to create user");
       } else {
@@ -109,7 +121,16 @@ const ProfileForm: FC = () => {
         <UploadZone type={"profileImage"} name={"profileImage"} />
         <TextInput name={"userName"} label={"Your choosen Username"} />
         <TextInput name={"socialLink"} label={"You Social Link"} />
-        <SubmitButton isSubmitting={isSubmitting} disabled={!isValid} />
+        <div className="flex justify-between align-center">
+          <button
+            type="button"
+            onClick={logout}
+            className="px-6 py-2 bg-red-500 text-white font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            SignOut
+          </button>
+          <SubmitButton isSubmitting={isSubmitting} disabled={!isValid} />
+        </div>
       </form>
     </FormContext.Provider>
   );

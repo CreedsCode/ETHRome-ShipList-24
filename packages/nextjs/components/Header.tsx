@@ -3,6 +3,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { APP_NAME, PLACEHOLDER_PROFILE_IMAGE } from "../const";
+import { usePrivy } from "@privy-io/react-auth";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
@@ -12,6 +13,8 @@ import { useOutsideClick } from "~~/hooks/scaffold-eth";
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
+  const { user, authenticated } = usePrivy();
+
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
@@ -49,13 +52,19 @@ export const Header = () => {
         </Link>
       </div>
       <div className="navbar-end">
-        <Link href="/profile" passHref>
-          <img
-            src={PLACEHOLDER_PROFILE_IMAGE}
-            alt="Profile Avatar"
-            className="w-10 h-10 rounded-full cursor-pointer border-2 border-gray-300"
-          />
-        </Link>
+        {authenticated ? (
+          <Link href="/profile" passHref>
+            <img
+              src={PLACEHOLDER_PROFILE_IMAGE}
+              alt="Profile Avatar"
+              className="w-10 h-10 rounded-full cursor-pointer border-2 border-gray-300"
+            />
+          </Link>
+        ) : (
+          <Link href="/signin" passHref>
+            Login
+          </Link>
+        )}
       </div>
     </div>
   );

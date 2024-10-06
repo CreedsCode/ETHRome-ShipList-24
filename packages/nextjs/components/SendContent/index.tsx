@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { usePrivy } from "@privy-io/react-auth";
 import { useForm } from "react-hook-form";
 import UploadZone from "~~/components/UploadZone";
 import SubmitButton from "~~/components/form/SubmitButton";
@@ -14,18 +18,25 @@ export interface ISendContentFormData {
 }
 
 const SendContent = () => {
+  const { authenticated } = usePrivy();
+  const { push } = useRouter();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const {
     formState: { errors, isValid },
     setValue,
     control,
-    reset,
     handleSubmit,
   } = useForm<ISendContentFormData>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: { message: "", files: [], receiver: "" },
   });
+
+  useEffect(() => {
+    if (!authenticated) {
+      push("/");
+    }
+  }, [authenticated]);
 
   const handleSave = async (data: ISendContentFormData) => {
     setIsSubmitting(true);

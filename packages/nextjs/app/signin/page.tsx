@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { protectData as privyProtectData } from "./privyProtectData";
 import { DataObject, IExecDataProtector } from "@iexec/dataprotector";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
@@ -8,12 +9,19 @@ import type { NextPage } from "next";
 
 const TestPage: NextPage = () => {
   const [dataProtector, setDataProtector] = useState<IExecDataProtector | null>(null);
+  const { push } = useRouter();
   const [protectedData, setProtectedData] = useState<any>(null);
   const [isProtecting, setIsProtecting] = useState(false);
   const { ready, authenticated, login, createWallet } = usePrivy();
   const { wallets } = useWallets();
   const [currentChain, setCurrentChain] = useState<`0x${string}` | null>(null);
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
+
+  useEffect(() => {
+    if (authenticated) {
+      push("send-content");
+    }
+  }, [authenticated]);
 
   useEffect(() => {
     const initializeDataProtector = async () => {

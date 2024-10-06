@@ -6,6 +6,8 @@ import { protectData as privyProtectData } from "./privyProtectData";
 import { DataObject, IExecDataProtector } from "@iexec/dataprotector";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import type { NextPage } from "next";
+import { useSwitchChain } from "wagmi";
+import { useDeployedContractInfo, useScaffoldReadContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
 
 const TestPage: NextPage = () => {
   const [dataProtector, setDataProtector] = useState<IExecDataProtector | null>(null);
@@ -58,10 +60,13 @@ const TestPage: NextPage = () => {
       }
     }
   };
+  const { chains, switchChain: wagmiSwitchChain } = useSwitchChain();
 
   const switchChain = async (chainId: `0x${string}`) => {
     if (wallets && wallets.length > 0) {
       try {
+        await wagmiSwitchChain({ chainId: parseInt(chainId, 16) });
+        console.log("chainId", chainId, parseInt(chainId, 16));
         await wallets[0].switchChain(chainId);
         setCurrentChain(chainId);
       } catch (error) {
@@ -71,15 +76,29 @@ const TestPage: NextPage = () => {
     }
   };
 
+  const { data: dataProtectorData, isLoading: isDataProtectorDataLoading } = useDeployedContractInfo("DataProtector");
+  const { targetNetwork } = useTargetNetwork();
+  useEffect(() => {
+    console.log("targetNetwork", targetNetwork);
+  }, [targetNetwork]);
+  const { data: nonce } = useScaffoldReadContract({
+    contractName: "DataProtector",
+    functionName: "nonces",
+    args: [wallets[0]?.address as `0x${string}`],
+    enabled: !!wallets[0]?.address,
+  });
+  console.log("nonce", nonce);
   const protectData = async () => {
     setIsProtecting(true);
+    console.log("isloading", isDataProtectorDataLoading, nonce);
     try {
       // const result = await dataProtector.protectData({
       //   data: {
       //     email: "example@gmail.com",
       //   },
       // });
-      const result = await privyProtectData("hi" as unknown as DataObject);
+      console.log("isloading", isDataProtectorDataLoading);
+      const result = await privyProtectData("hi" as unknown as DataObject, wallets[0], dataProtectorData, nonce);
       setProtectedData(result);
       // alert("Data protected successfully!");
     } catch (error) {

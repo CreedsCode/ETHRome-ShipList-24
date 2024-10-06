@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { PrivyProvider, addRpcUrlOverrideToChain } from "@privy-io/react-auth";
 import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
+import { WagmiProvider } from "@privy-io/wagmi";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
@@ -10,7 +11,6 @@ import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { defineChain } from "viem";
 import { base, baseSepolia } from "viem/chains";
-import { WagmiProvider } from "wagmi";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
@@ -86,11 +86,11 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
           createOnLogin: "users-without-wallets",
         },
         defaultChain: baseSepolia,
-        supportedChains: [base, baseSepolia, iexecOverride],
+        supportedChains: [baseSepolia, iexecOverride],
       }}
     >
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <WagmiProvider config={wagmiConfig}>
           <ProgressBar height="3px" color="#2299dd" />
           <SmartWalletsProvider>
             <RainbowKitProvider
@@ -100,8 +100,8 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
               <ScaffoldEthApp>{children}</ScaffoldEthApp>
             </RainbowKitProvider>
           </SmartWalletsProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
+        </WagmiProvider>
+      </QueryClientProvider>
     </PrivyProvider>
   );
 };

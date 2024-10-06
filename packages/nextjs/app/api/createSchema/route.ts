@@ -12,6 +12,7 @@ import {
 import scaffoldConfig from "~~/scaffold.config";
 import { adminAccount } from "~~/utils/admin";
 import { getAlchemyHttpUrl } from "~~/utils/scaffold-eth";
+import deployedContracts from "~~/contracts/deployedContracts";
 
 // address _datasetOwner,
 // 		string calldata _datasetName,
@@ -26,7 +27,6 @@ type WhitelistRequest = {
   datasetChecksum: string;
   metaTransaction: string;
   signature: string;
-  chainId: number;
 };
 
 const iexec = defineChain({
@@ -73,10 +73,11 @@ export async function POST(request: Request) {
       transport: http(getAlchemyHttpUrl(targetNetwork.id)),
     });
 
-    const schemaContract = scaffoldConfig.targetNetworks[3];
+    const schemaContract = scaffoldConfig.targetNetworks[1];
     console.log("schemaContract", schemaContract);
-
+    console.log("metatransaction", metaTransaction);
     console.log("Verifying signature...");
+    console.log("nonce", metaTransaction.nonce);
 
     // Convert string representations back to BigInt
     const convertedMetaTransaction = {
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
       signature: signature as Hex,
     });
 
-    console.log("Signature verified, its from: ", signerAddress);
+    console.log("Signature verified, its from: ", signerAddress, datasetOwner);
 
     if (signerAddress.toLowerCase() !== metaTransaction.from.toLowerCase()) {
       throw new Error("Invalid signature");
@@ -127,17 +128,36 @@ export async function POST(request: Request) {
 
     console.log("=============", "calling");
 
-    // Call executeMetaTransaction on the DataContract
+    // const gasEstimate = await adminClient.estimateContractGas({
+    //   address: deployedContracts[134].DataProtector.address,
+    //   abi: deployedContracts[134].DataProtector.abi,
+    //   functionName: "executeMetaTransaction",
+    //   args: [metaTransaction.from, metaTransaction.functionSignature, rHex, sHex, v],
+    // });
+
+    // console.log("Estimated gas:", gasEstimate);
+    console.log("Executing meta transaction with params:", {
+      from: metaTransaction.from,
+      functionSignature: metaTransaction.functionSignature,
+      r: rHex,
+      s: sHex,
+      v: v
+    });
     const tx: WriteContractReturnType = await adminClient.writeContract({
-      address: dataContract.address,
-      abi: dataContract.abi,
+      address: deployedContracts[134].DataProtector.address,
+      abi: deployedContracts[134].DataProtector.abi,
       functionName: "executeMetaTransaction",
       args: [metaTransaction.from, metaTransaction.functionSignature, rHex, sHex, v],
+      // gas: gasEstimate,
     });
+
+
+    console.log("Contract address:", deployedContracts[134].DataProtector.address);
+    console.log("ABI:", JSON.stringify(deployedContracts[134].DataProtector.abi, null, 2));
     console.log("=============", tx);
     return NextResponse.json({ message: "called successfully" }, { status: 200 });
   } catch (error) {
-    console.error("Error whitelisting public key:", error);
-    return NextResponse.json({ message: "Error whitelisting public key" }, { status: 500 });
+    console.error("Error running cool stuff:", error);
+    return NextResponse.json({ message: "Error whitelisting public key", error: (error as Error).message }, { status: 500 });
   }
 }

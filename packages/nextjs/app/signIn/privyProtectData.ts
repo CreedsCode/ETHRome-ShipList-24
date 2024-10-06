@@ -25,6 +25,7 @@ export const protectData = async (data: DataObject, wallet, deployedDataProtecto
   const schema = await extractDataSchema(vData);
   console.log("schema", schema);
 
+
   // 2.1 create a zip file
   let file: Buffer;
   try {
@@ -85,76 +86,110 @@ export const protectData = async (data: DataObject, wallet, deployedDataProtecto
   const multiaddr = `/p2p/${cid}`;
   console.log("multiaddr", multiaddr);
   // 6. call createDataSetWithSchema on the dataprotector contract args: encryptedData uri and data schema
+  let signature;
+  let metaTransaction;
   try {
     console.log("deployedDataProtectorData", deployedDataProtectorData);
+    console.log("multiaddr", multiaddr);
+    const inputWalletAddress = wallet.address;
+    const inputDatasetName = "test";
+    const inputDatasetSchema = JSON.stringify(schema);
+    const inputDatasetMultiaddr = "0x" + Buffer.from(multiaddr).toString("hex");
+    const inputDatasetChecksum = checksum;
     const functionSignature = encodeFunctionData({
       abi: deployedDataProtectorData?.abi,
       functionName: "createDatasetWithSchema",
-      args: [wallet.address, "test", schema, multiaddr, checksum as `0x${string}`],
+      args: [
+        inputWalletAddress,
+        inputDatasetName,
+        inputDatasetSchema,
+        inputDatasetMultiaddr,
+        inputDatasetChecksum as `0x${string}`,
+      ],
     });
-
+    console.log("encoded function content: ", wallet.address, "test", inputDatasetSchema, multiaddr, checksum);
     console.log("functionSignature", functionSignature);
 
-    const metaTransaction = {
+    metaTransaction = {
       nonce: BigInt(nonce?.toString() || "0"),
       from: wallet.address,
       functionSignature: functionSignature,
     };
     console.log("metaTransaction", metaTransaction);
 
-    const signature = await wallet.signTypedData({
-      domain: {
-        name: "DataProtector",
-        version: "1",
-        chainId: BigInt(iexec.id),
-        verifyingContract: deployedDataProtectorData?.address as `0x${string}`,
+    // Get the Ethereum provider from the wallet
+    const provider = await wallet.getEthereumProvider();
+
+    // Use the provider to sign the typed data
+    console.log("signing", deployedDataProtectorData?.address);
+    const signatureJsonDataString = JSON.stringify(
+      {
+        domain: {
+          name: "DataProtector",
+          version: "1",
+          chainId: BigInt(iexec.id),
+          verifyingContract: deployedDataProtectorData?.address as `0x${string}`,
+        },
+        types: {
+          EIP712Domain: [
+            { name: "name", type: "string" },
+            { name: "version", type: "string" },
+            { name: "chainId", type: "uint256" },
+            { name: "verifyingContract", type: "address" },
+          ],
+          MetaTransactionStruct: [
+            { name: "nonce", type: "uint256" },
+            { name: "from", type: "address" },
+            { name: "functionSignature", type: "bytes" },
+          ],
+        },
+        primaryType: "MetaTransactionStruct",
+        message: metaTransaction,
       },
-      types: {
-        EIP712Domain: [
-          { name: "name", type: "string" },
-          { name: "version", type: "string" },
-          { name: "chainId", type: "uint256" },
-          { name: "verifyingContract", type: "address" },
-        ],
-        MetaTransactionStruct: [
-          { name: "nonce", type: "uint256" },
-          { name: "from", type: "address" },
-          { name: "functionSignature", type: "bytes" },
-        ],
-      },
-      primaryType: "MetaTransactionStruct",
-      message: metaTransaction,
+      (_, v) => (typeof v === "bigint" ? v.toString() : v),
+    );
+    console.log("signatureJsonDataString", signatureJsonDataString);
+    signature = await provider.request({
+      method: "eth_signTypedData_v4",
+      params: [wallet.address, signatureJsonDataString],
     });
     console.log("signature", signature);
   } catch (error) {
     console.error("Error submitting:", error);
   }
 
-  // try {
-  //   const response = await fetch("/api/createSchema", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       datasetOwner: wallet.address,
-  //       datasetName: "test",
-  //       datasetSchema: schema,
-  //       datasetMultiaddr: multiaddr,
-  //       datasetChecksum: checksum,
-  //     }),
-  //   });
+  try {
+    const createShemaJsonstring = JSON.stringify(
+      {
+        datasetOwner: wallet.address,
+        datasetName: "test",
+        datasetSchema: JSON.stringify(schema),
+        datasetMultiaddr: multiaddr,
+        datasetChecksum: checksum,
+        metaTransaction: metaTransaction,
+        signature: signature,
+      },
+      (_, v) => (typeof v === "bigint" ? v.toString() : v),
+    );
+    console.log("SEEEENDING:: ", createShemaJsonstring);
+    const response = await fetch("/api/createSchema", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: createShemaJsonstring,
+    });
 
-  //   if (response.ok) {
-  //     const data = await response.json();
-  //     localStorage.setItem("creatingSchema tx", data.transactionHash);
-  //     console.log("Public key sent for whitelisting");
-  //   } else {
-  //     console.error("Failed to create schema");
-  //   }
-  // } catch (error) {
-  //   console.error("Error sending data to contract:", error);
-  // }
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("creatingSchema tx", data.transactionHash);
+      console.log("Public key sent for whitelisting");
+    } else {
+      console.error("Failed to create schema");
+    }
+  } catch (error) {
+    console.error("Error sending data to contract:", error);
+  }
 
   // 6.1 dataprotector contract is calling the dataset regestry
 
